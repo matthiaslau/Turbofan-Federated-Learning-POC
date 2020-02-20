@@ -1,0 +1,93 @@
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
+<!-- UIkit JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+
+<!-- Local CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">
+
+<!--  Page Template -->
+<html>
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<head>
+    <title>Turbofan Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="fixed-background"></div>
+    <div class="uk-background-cover uk-align-center uk-container-expand content">
+        <div class="uk-section uk-padding-remove-vertical">
+            <div class="uk-flex uk-flex-center uk-flex-middle uk-padding-medium">
+                <img class="" width="50" height="50" alt="Grid Icon" uk-img="/static/images/grid-white.01b839c4.svg"
+                    uk-svg>
+                <h2 class="uk-margin left" style="color: white"> Turbofan Engine </h2>
+            </div>
+
+            <!-- General Info -->
+            <div mos class="uk-width-2-3 uk-align-center uk-flex uk-flex-center">
+                <div class="uk-flex uk-flex-center uk-flex-middle">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Id: </div>
+                    <div style="color:white" id="engine" class="uk-text-bold">[[ id ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">State: </div>
+                    <div style="color:white" id="state" class="uk-text-bold">[[ state ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Local Grid Node: </div>
+                    <div style="color:white" id="grid-node" class="uk-text-bold">[[ address ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Grid Gateway: </div>
+                    <div style="color:white" id="grid-gateway" class="uk-text-bold">[[ address ]]</div>
+                </div>
+            </div>
+            <!-- General Info End -->
+
+            <!-- Stats Info -->
+            <div mos class="uk-width-2-3 uk-align-center uk-flex uk-flex-center">
+                <div class="uk-flex uk-flex-center uk-flex-middle">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Failures: </div>
+                    <div style="color:white" id="failures" class="uk-text-bold">[[ count ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Prevented Failures: </div>
+                    <div style="color:white" id="prevented-failures" class="uk-text-bold">[[ count ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Prevented Failures too early: </div>
+                    <div style="color:white" id="maintenance-too-early" class="uk-text-bold">[[ count ]]</div>
+                </div>
+            </div>
+            <!-- Stats Info End -->
+
+            <!-- Engine Info -->
+            <div mos class="uk-width-2-3 uk-align-center uk-flex uk-flex-center">
+                <div class="uk-flex uk-flex-center uk-flex-middle">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Cycle: </div>
+                    <div style="color:white" id="cycle" class="uk-text-bold">[[ current ]]</div>
+                </div>
+                <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-left">
+                    <div style=" color: white" class="uk-text-lighter uk-text-left">Predicted RUL: </div>
+                    <div style="color:white" id="prediction" class="uk-text-bold">[[ rul ]]</div>
+                </div>
+            </div>
+            <!-- Engine Info End -->
+
+            <!-- Bottom Cards Flex Box - Status Tables -->
+        </div>
+        <div class="uk-section">
+            <div mos class="uk-flex-center uk-grid-large" id="charts-container" uk-grid>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

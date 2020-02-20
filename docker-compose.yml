@@ -1,0 +1,191 @@
+version: '3'
+services:
+    notebooks:
+      image: heurekalabs/pysyft-notebook:latest
+      container_name: notebooks
+      environment:
+                - JUPYTER_ENABLE_LAB=yes
+                - WORKSPACE_DIR=/notebooks
+      networks:
+                - grid_default
+      ports:
+                - "8888:8888"
+      volumes:
+                - ./:/notebooks
+    gateway:
+        image: openmined/grid-gateway:latest
+        container_name: grid-gateway
+        environment:
+                - PORT=5000
+                - SECRET_KEY=ineedtoputasecrethere
+                - DATABASE_URL=sqlite:///databasegateway.db
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_LOG-FILE=-
+        networks:
+                - grid_default
+        ports:
+                - "5000:5000"
+    engine1:
+        image: heurekalabs/turbofan-engine:latest
+        container_name: engine1
+        environment:
+                - GRID_NETWORK_URL=http://grid-gateway:5000
+                - ID=gridnode1
+                - ADDRESS=http://engine1:3001
+                - DATABASE_URL=sqlite:///databaseGridEngine1.db
+                - PORT=3001
+                - ENGINE_ID=engine1
+                - ENGINE_PORT=8001
+                - GRID_NODE_ADDRESS=localhost:3001
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - DATA_DIR=/data
+                - DATASET_ID=1
+                - CYCLE_LENGTH=1
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_TIMEOUT=90
+                - GUNICORN_LOG-FILE=-
+        depends_on:
+                - "gateway"
+        networks:
+                - grid_default
+        ports:
+                - "3001:3001"
+                - "8001:8001"
+        volumes:
+                - ./data:/data
+    engine2:
+        image: heurekalabs/turbofan-engine:latest
+        container_name: engine2
+        environment:
+                - GRID_NETWORK_URL=http://grid-gateway:5000
+                - ID=gridnode2
+                - ADDRESS=http://engine2:3002
+                - DATABASE_URL=sqlite:///databaseGridEngine2.db
+                - PORT=3002
+                - ENGINE_ID=engine2
+                - ENGINE_PORT=8002
+                - GRID_NODE_ADDRESS=localhost:3002
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - DATA_DIR=/data
+                - DATASET_ID=2
+                - CYCLE_LENGTH=1
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_TIMEOUT=90
+                - GUNICORN_LOG-FILE=-
+        depends_on:
+                - "gateway"
+        networks:
+                - grid_default
+        ports:
+                - "3002:3002"
+                - "8002:8002"
+        volumes:
+                - ./data:/data
+    engine3:
+        image: heurekalabs/turbofan-engine:latest
+        container_name: engine3
+        environment:
+                - GRID_NETWORK_URL=http://grid-gateway:5000
+                - ID=gridnode3
+                - ADDRESS=http://engine3:3003
+                - DATABASE_URL=sqlite:///databaseGridEngine3.db
+                - PORT=3003
+                - ENGINE_ID=engine3
+                - ENGINE_PORT=8003
+                - GRID_NODE_ADDRESS=localhost:3003
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - DATA_DIR=/data
+                - DATASET_ID=3
+                - CYCLE_LENGTH=1
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_TIMEOUT=90
+                - GUNICORN_LOG-FILE=-
+        depends_on:
+                - "gateway"
+        networks:
+                - grid_default
+        ports:
+                - "3003:3003"
+                - "8003:8003"
+        volumes:
+                - ./data:/data
+    engine4:
+        image: heurekalabs/turbofan-engine:latest
+        container_name: engine4
+        environment:
+                - GRID_NETWORK_URL=http://grid-gateway:5000
+                - ID=gridnode4
+                - ADDRESS=http://engine4:3004
+                - DATABASE_URL=sqlite:///databaseGridEngine4.db
+                - PORT=3004
+                - ENGINE_ID=engine4
+                - ENGINE_PORT=8004
+                - GRID_NODE_ADDRESS=localhost:3004
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - DATA_DIR=/data
+                - DATASET_ID=4
+                - CYCLE_LENGTH=1
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_TIMEOUT=90
+                - GUNICORN_LOG-FILE=-
+        depends_on:
+                - "gateway"
+        networks:
+                - grid_default
+        ports:
+                - "3004:3004"
+                - "8004:8004"
+        volumes:
+                - ./data:/data
+    engine5:
+        image: heurekalabs/turbofan-engine:latest
+        container_name: engine5
+        environment:
+                - GRID_NETWORK_URL=http://grid-gateway:5000
+                - ID=gridnode5
+                - ADDRESS=http://engine5:3005
+                - DATABASE_URL=sqlite:///databaseGridEngine5.db
+                - PORT=3005
+                - ENGINE_ID=engine5
+                - ENGINE_PORT=8005
+                - GRID_NODE_ADDRESS=localhost:3005
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - DATA_DIR=/data
+                - DATASET_ID=5
+                - CYCLE_LENGTH=1
+                - GUNICORN_WORKER_CLASS=gevent
+                - GUNICORN_TIMEOUT=90
+                - GUNICORN_LOG-FILE=-
+        depends_on:
+                - "gateway"
+        networks:
+                - grid_default
+        ports:
+                - "3005:3005"
+                - "8005:8005"
+        volumes:
+                - ./data:/data
+    trainer:
+        image: heurekalabs/turbofan-federated-trainer:latest
+        container_name: trainer
+        environment:
+                - NEW_DATA_THRESHOLD=300
+                - GRID_GATEWAY_ADDRESS=grid-gateway:5000
+                - SCHEDULER_INTERVAL=10
+                - EPOCHS=30
+                - DATA_DIR=/data
+                - MODEL_DIR=/models
+        depends_on:
+                - "engine1"
+                - "engine2"
+                - "engine3"
+                - "engine4"
+                - "engine5"
+        networks:
+                - grid_default
+        volumes:
+                - ./data:/data
+                - ./models:/models
+networks:
+  grid_default:
+    driver: bridge

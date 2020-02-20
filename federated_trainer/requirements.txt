@@ -1,0 +1,9 @@
+apscheduler
+matplotlib
+msgpack==0.6.2
+numpy
+pandas
+requests
+syft == 0.2.2a1
+termplotlib
+torch == 1.3.0

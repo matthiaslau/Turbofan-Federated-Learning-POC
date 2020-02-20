@@ -1,0 +1,21 @@
+# ignore hidden directories
+.ipynb_checkpoints/
+.idea
+.local
+.cache
+.keras
+.jupyter
+.ipython
+
+# ignore python cache
+__pycache__/
+*.pyc
+
+# ignore data and database files
+data
+engine/engine_node/app/*.db
+engine/grid_node/app/*.db
+
+# ignore all model files except the initial model
+models/*
+!models/turbofan_initial.pt
