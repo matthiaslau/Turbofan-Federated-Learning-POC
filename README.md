@@ -59,12 +59,12 @@ python data_preprocessor.py --turbofan_dataset_id=FD001 --engine_percentage_init
 ## Data Analysis
 
 Now the project officially begins! :rocket: The first step is analysing the initial data we have centrally as the 
-manufacturer to learn more about the data itself. See the [data analysis notebook](notebooks/Data_Analysis.html).
+manufacturer to learn more about the data itself. See the [data analysis notebook](notebooks/data_analysis.ipynb).
 
 ## Initial Training
 
 The next step is to prepare the data for training and to design a model. Then an initial model is trained, evaluated 
-and saved into the model directory. See the [initial training notebook](notebooks/Federated_Learning_PySyft_InitialTraining.ipynb).
+and saved into the model directory. See the [initial training notebook](notebooks/initial_training.ipynb).
 
 ## Start the Engines
 
