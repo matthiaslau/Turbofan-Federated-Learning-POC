@@ -139,7 +139,7 @@ The engines directly start running, you can check this out on their web interfac
 piece still missing is the federated trainer. You can start it like this:
 
 ```
-python federated_trainer.py --grid_gateway_address=localhost:5000 --new_data_threshold=250 --scheduler_interval=10 epochs=70 data_dir=../data model_dir=../models
+python federated_trainer.py --grid_gateway_address=localhost:5000 --new_data_threshold=250 --scheduler_interval=10 --epochs=70 --data_dir=../data --model_dir=../models
 ```
 
 The setup is now ready and running! :tada:
