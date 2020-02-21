@@ -97,13 +97,13 @@ docker logs -f trainer
 
 ## Pimp the Engines
 
-There are a lot of parameters in the `docker-compose.yml`, here are the most important ones explained:
+There are a lot of parameters in the `docker-compose.yml` and for serious results you need to adjust some of them. Here 
+are the most important ones explained:
 
 - **CYCLE_LENGTH (engine)**: The amount of seconds one single engine cycle will take. Decrease to speed up the engine 
-emulation.
+emulation.  
 - **NEW_DATA_THRESHOLD (trainer)**: The federated trainer will wait for this amount of new data before starting a new 
-training round.
-- **SCHEDULER_INTERVAL (trainer)**: The interval of the federated trainer to check the grid for new data.
+training round. Increase to prevent training rounds with too few data.
 - **EPOCHS (trainer)**: The number of epochs the federated trainer is using for training.
 
 ## Bonus: Local Setup
