@@ -147,8 +147,8 @@ The setup is now ready and running! :tada:
 ### Building docker images
 
 If you want to build your own docker images with code changes you can easily use the `build-docker-images.sh` script. 
-It will build a base image with main dependencies, an image for the engine, an image for the federated trainer and an 
-image for the jupyter notebook environment.
+It will use a base image from docker hub with main dependencies to build an image for the engine, an image for the 
+federated trainer and an image for the jupyter notebook environment.
 
 ## Join the PySyft Community!
 
