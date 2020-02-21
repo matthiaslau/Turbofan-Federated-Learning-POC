@@ -31,6 +31,7 @@ prediction quality over time.
 ## The Data
 
 ![Simplified diagram of turbofan engine [2]](images/engine_diagram.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmatthiaslau%2FTurbofan-Federated-Learning-POC.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmatthiaslau%2FTurbofan-Federated-Learning-POC?ref=badge_shield)
 
 <sup>*Simplified diagram of turbofan engine [2]*</sup>
 
@@ -163,3 +164,7 @@ Center, Moffett Field, CA
 
 [2] Damage Propagation Modeling for Aircraft Engine Run-to-Failure Simulation, 
 https://data.nasa.gov/dataset/Damage-Propagation-Modeling-for-Aircraft-Engine-Ru/j94x-wgir
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmatthiaslau%2FTurbofan-Federated-Learning-POC.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmatthiaslau%2FTurbofan-Federated-Learning-POC?ref=badge_large)
