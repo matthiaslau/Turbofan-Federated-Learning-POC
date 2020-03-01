@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: /Users/matti/dev/kompose/kompose -f ../docker-compose.yml convert
+      --volumes=configMap
+    kompose.version: 1.20.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: trainer
+  name: trainer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: trainer
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: /Users/matti/dev/kompose/kompose -f ../docker-compose.yml convert
+          --volumes=configMap
+        kompose.version: 1.20.0 ()
+      creationTimestamp: null
+      labels:
+        io.kompose.network/grid-default: "true"
+        io.kompose.service: trainer
+    spec:
+      containers:
+      - env:
+        - name: DATA_DIR
+          value: /data
+        - name: EPOCHS
+          value: "100"
+        - name: GRID_GATEWAY_ADDRESS
+          value: grid-gateway:5000
+        - name: MODEL_DIR
+          value: /models
+        - name: NEW_DATA_THRESHOLD
+          value: "1200"
+        - name: SCHEDULER_INTERVAL
+          value: "10"
+        image: eu.gcr.io/health-ml/turbofan-federated-trainer:latest
+        imagePullPolicy: ""
+        name: trainer
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

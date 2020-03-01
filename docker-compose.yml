@@ -7,12 +7,14 @@ services:
                 - JUPYTER_ENABLE_LAB=yes
                 - WORKSPACE_DIR=/notebooks
       networks:
-                - grid_default
+                - grid-default
       ports:
                 - "8888:8888"
       volumes:
-                - ./:/notebooks
-    gateway:
+                - ./notebooks:/notebooks
+      labels:
+                kompose.service.type: loadbalancer
+    grid-gateway:
         image: openmined/grid-gateway:latest
         container_name: grid-gateway
         environment:
@@ -22,7 +24,7 @@ services:
                 - GUNICORN_WORKER_CLASS=gevent
                 - GUNICORN_LOG-FILE=-
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "5000:5000"
     engine1:
@@ -47,12 +49,14 @@ services:
         depends_on:
                 - "gateway"
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "3001:3001"
                 - "8001:8001"
         volumes:
-                - ./data:/data
+                - ./data/train_data_worker_1.txt:/data/train_data_worker_1.txt
+        labels:
+                kompose.service.type: loadbalancer
     engine2:
         image: heurekalabs/turbofan-engine:latest
         container_name: engine2
@@ -75,12 +79,14 @@ services:
         depends_on:
                 - "gateway"
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "3002:3002"
                 - "8002:8002"
         volumes:
-                - ./data:/data
+                - ./data/train_data_worker_2.txt:/data/train_data_worker_2.txt
+        labels:
+                kompose.service.type: loadbalancer
     engine3:
         image: heurekalabs/turbofan-engine:latest
         container_name: engine3
@@ -103,12 +109,14 @@ services:
         depends_on:
                 - "gateway"
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "3003:3003"
                 - "8003:8003"
         volumes:
-                - ./data:/data
+                - ./data/train_data_worker_3.txt:/data/train_data_worker_3.txt
+        labels:
+                kompose.service.type: loadbalancer
     engine4:
         image: heurekalabs/turbofan-engine:latest
         container_name: engine4
@@ -131,12 +139,14 @@ services:
         depends_on:
                 - "gateway"
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "3004:3004"
                 - "8004:8004"
         volumes:
-                - ./data:/data
+                - ./data/train_data_worker_4.txt:/data/train_data_worker_4.txt
+        labels:
+                kompose.service.type: loadbalancer
     engine5:
         image: heurekalabs/turbofan-engine:latest
         container_name: engine5
@@ -159,12 +169,14 @@ services:
         depends_on:
                 - "gateway"
         networks:
-                - grid_default
+                - grid-default
         ports:
                 - "3005:3005"
                 - "8005:8005"
         volumes:
-                - ./data:/data
+                - ./data/train_data_worker_5.txt:/data/train_data_worker_5.txt
+        labels:
+                kompose.service.type: loadbalancer
     trainer:
         image: heurekalabs/turbofan-federated-trainer:latest
         container_name: trainer
@@ -182,10 +194,11 @@ services:
                 - "engine4"
                 - "engine5"
         networks:
-                - grid_default
-        volumes:
-                - ./data:/data
-                - ./models:/models
+                - grid-default
+        #volumes:
+                #- ./data/test_data_val.txt:/data/test_data_val.txt
+                #- ./data/test_data_test.txt:/data/test_data_test.txt
+                #- ./models/turbofan_initial.pt:/models/turbofan_initial.pt
 networks:
-  grid_default:
+  grid-default:
     driver: bridge

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: /Users/matti/dev/kompose/kompose -f ../docker-compose.yml convert
+      --volumes=configMap
+    kompose.service.type: loadbalancer
+    kompose.version: 1.20.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: notebooks
+  name: notebooks
+spec:
+  ports:
+  - name: "8888"
+    port: 8888
+    targetPort: 8888
+  selector:
+    io.kompose.service: notebooks
+  type: LoadBalancer
+status:
+  loadBalancer: {}

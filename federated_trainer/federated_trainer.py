@@ -259,7 +259,13 @@ if __name__ == "__main__":
 
     print("Deploying initial model to grid...")
 
-    initial_model = load_initial_model()
+    # keep looking for the initial model until it exists
+    initial_model = None
+    while initial_model is None:
+        try:
+            initial_model = load_initial_model()
+        except:
+            pass
     serve_model(initial_model)
 
     print("Started Federated Trainer... watching for new data.")
