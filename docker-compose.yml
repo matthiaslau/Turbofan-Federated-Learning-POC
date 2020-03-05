@@ -13,7 +13,7 @@ services:
       volumes:
                 - ./:/notebooks
     gateway:
-        image: openmined/grid-gateway:latest
+        image: heurekalabs/grid-gateway:latest
         container_name: grid-gateway
         environment:
                 - PORT=5000
