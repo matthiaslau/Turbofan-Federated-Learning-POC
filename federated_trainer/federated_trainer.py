@@ -9,34 +9,23 @@ import argparse
 from collections import defaultdict
 import logging
 
-import numpy as np
-import termplotlib as tpl
-import matplotlib.pyplot as plt
-import matplotlib
-
 import torch
 import syft as sy
 from apscheduler.schedulers.blocking import BlockingScheduler
 from syft import PublicGridNetwork
 
-from helper.data_helper import get_validation_data, get_test_data, WINDOW_SIZE
-from helper.trainings_helper import data_result_size, start_federated_training, history
+from helper.data_helper import WINDOW_SIZE
+from helper.trainings_helper import data_result_size, start_federated_training
 from helper.trainings_helper import get_model_error
 from helper.turbofan_model import TurbofanModel
+import helper.config_helper as config
+
 
 hook = sy.TorchHook(torch)
-
-matplotlib.use('agg')
 
 DATA_TAGS = ("#X", "#turbofan", "#dataset")
 LABEL_TAGS = ("#Y", "#turbofan", "#dataset")
 MODEL_ID = "turbofan"
-
-grid_gateway_address = None
-new_data_threshold = None
-epochs = None
-data_dir = None
-model_dir = None
 
 training_rounds = 0
 inputs_used = defaultdict(list)
@@ -97,7 +86,7 @@ def handle_interval():
     data_count = data_result_size(list(inputs.values()))
     print("Found {} new input samples in the grid".format(data_count))
 
-    if data_count >= new_data_threshold:
+    if data_count >= config.new_data_threshold:
         print("Enough data available, starting training...")
         # enough new data is available, let´s start a new round of federated training
         training_rounds += 1
@@ -109,7 +98,7 @@ def get_grid_data():
 
     :return: A tuple with the input data and labels from the grid
     """
-    grid = PublicGridNetwork(hook, "http://{}".format(grid_gateway_address))
+    grid = PublicGridNetwork(hook, "http://{}".format(config.grid_gateway_address))
     inputs = grid.search(*DATA_TAGS)
     labels = grid.search(*LABEL_TAGS)
 
@@ -157,7 +146,7 @@ def save_model(model):
 
     :param model: Model to save
     """
-    torch.save(model, "{}/turbofan_{}.pt".format(model_dir, training_rounds))
+    torch.save(model, "{}/turbofan_{}.pt".format(config.model_dir, training_rounds))
 
 
 def load_initial_model():
@@ -165,7 +154,7 @@ def load_initial_model():
 
     :return: The initial model
     """
-    return torch.load("{}/turbofan_initial.pt".format(model_dir))
+    return torch.load("{}/turbofan_initial.pt".format(config.model_dir))
 
 
 def load_latest_model():
@@ -176,7 +165,7 @@ def load_latest_model():
     index = training_rounds - 1
     if index == 0:
         index = "initial"
-    return torch.load("{}/turbofan_{}.pt".format(model_dir, index))
+    return torch.load("{}/turbofan_{}.pt".format(config.model_dir, index))
 
 
 def serve_model(model):
@@ -186,7 +175,7 @@ def serve_model(model):
     """
     trace_model = torch.jit.trace(model, torch.rand((1, WINDOW_SIZE, 11)))
 
-    grid = PublicGridNetwork(hook, "http://{}".format(grid_gateway_address))
+    grid = PublicGridNetwork(hook, "http://{}".format(config.grid_gateway_address))
 
     # note: the current implementation only returns the first node found
     node = grid.query_model_hosts(MODEL_ID)
@@ -198,26 +187,6 @@ def serve_model(model):
         grid.serve_model(trace_model, id=MODEL_ID, allow_remote_inference=True)
 
 
-def plot_history(rmse):
-    """ Plot the train and validation loss to an image and to the console.
-
-    :param rmse: The RMSE score to print in the image
-    """
-    plt.figure()
-    plt.xlabel('Epoch')
-    plt.plot(history['epoch'], np.array(history['loss']), label='Train Loss')
-    plt.plot(history['epoch'], np.array(history['val_loss']), label='Validation loss')
-    plt.legend()
-    plt.title("RMSE: {:7.2f}".format(rmse))
-    plt.savefig('{}/turbofan_fl_loss_{}.png'.format(model_dir, training_rounds))
-
-    # plot to console
-    fig = tpl.figure()
-    fig.plot(np.array(history['epoch']), np.array(history['loss']), label='Train Loss', xlabel='Epoch')
-    fig.plot(np.array(history['epoch']), np.array(history['val_loss']), label='Validation loss', xlabel='Epoch')
-    fig.show()
-
-
 def start_training_round(inputs, labels):
     """ Start a new federated training round.
 
@@ -226,16 +195,12 @@ def start_training_round(inputs, labels):
     """
     inputs_list = list(inputs.values())
     labels_list = list(labels.values())
-    val_data, val_labels = get_validation_data(data_dir)
     latest_model = load_latest_model()
-    model = start_federated_training(latest_model, inputs_list, labels_list, val_data, val_labels, epochs)
+    model, round_loss = start_federated_training(latest_model, inputs_list, labels_list)
 
     # evaluate model
-    test_data, test_labels = get_test_data(data_dir)
-    rmse = get_model_error(model, test_data, test_labels)
-    print("Model RMSE is {:7.2f}".format(rmse))
-
-    plot_history(rmse)
+    rmse = get_model_error(model)
+    print("Current Round:\tLoss: {:.4f}\tRMSE: {:7.2f}".format(round_loss, rmse))
 
     print("Serving the updated model...")
     serve_model(model)
@@ -248,12 +213,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # read in the arguments
-    grid_gateway_address = args.grid_gateway_address
-    new_data_threshold = int(args.new_data_threshold)
     scheduler_interval = int(args.scheduler_interval)
-    epochs = int(args.epochs)
-    data_dir = args.data_dir
-    model_dir = args.model_dir
+
+    config.grid_gateway_address = args.grid_gateway_address
+    config.new_data_threshold = int(args.new_data_threshold)
+    config.epochs = int(args.epochs)
+    config.data_dir = args.data_dir
+    config.model_dir = args.model_dir
 
     logging.getLogger('apscheduler').setLevel(logging.ERROR)
 

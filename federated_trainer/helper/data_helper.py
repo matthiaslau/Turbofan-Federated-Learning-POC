@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import torch
 
+from . import config_helper as config
+
 
 WINDOW_SIZE = 80
 BATCH_SIZE = 210
@@ -152,23 +154,21 @@ def _prepare_data(data):
     return tensor_x, tensor_y
 
 
-def get_validation_data(data_dir):
+def get_validation_data():
     """ Retrieve the prepared validation data.
 
-    :param data_dir: Data directory to load the validation data from
     :return: The prepared validation data
     """
-    val_data = _load_validation_data(data_dir)
+    val_data = _load_validation_data(config.data_dir)
     return _prepare_data(val_data)
 
 
-def get_test_data(data_dir):
+def get_test_data():
     """ Retrieve the prepared test data.
 
-    :param data_dir: Data directory to load the test data from
     :return: The prepared test data
     """
-    test_data = _load_test_data(data_dir)
+    test_data = _load_test_data(config.data_dir)
     return _prepare_data(test_data)
 
 
