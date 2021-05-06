@@ -1,7 +1,7 @@
 APScheduler==3.6
 eventlet==0.24.1
 Flask==1.0.2
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-Sockets==0.2.1
 flask_login
 flask_migrate
